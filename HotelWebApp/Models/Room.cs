@@ -11,6 +11,12 @@ namespace HotelWebApp.Models
 {
     public class Room
     {
+        public Room() { }
+        public Room(int id) {
+          HotelId = id;
+        
+        }
+
         public int Id { get; set; }
 
         [Required(ErrorMessage = ErrMsge.Requerido)]
@@ -21,7 +27,6 @@ namespace HotelWebApp.Models
         [RegularExpression("([0-9]+)", ErrorMessage = ErrMsge.SoloNumeros)]
         public int MaxGuests { get; set; }
 
-        [ForeignKey("Hotel")]
         public int HotelId { get; set; }
 
         public Hotel Hotel { get; set; }

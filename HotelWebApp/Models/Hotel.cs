@@ -24,7 +24,6 @@ namespace HotelWebApp.Models
 
         [Required(ErrorMessage = ErrMsge.Requerido)]
         [DataType(DataType.Text)]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = ErrMsge.SoloLetras)]
         [StringLength(20, MinimumLength = 2, ErrorMessage = ErrMsge.RangoMinMax)]
         public string Name { get; set; }
 
@@ -34,7 +33,6 @@ namespace HotelWebApp.Models
 
         [Required(ErrorMessage = ErrMsge.Requerido)]
         [DataType(DataType.Text)]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = ErrMsge.SoloLetras)]
         [StringLength(50, MinimumLength = 2, ErrorMessage = ErrMsge.RangoMinMax)]
         public string Address { get; set; }
 
@@ -42,6 +40,6 @@ namespace HotelWebApp.Models
         public string PhoneNumber { get; set; }
 
 
-        public List<Room> Rooms { get; set; }
+        public List<Room>? Rooms { get; set; }
     }
 }

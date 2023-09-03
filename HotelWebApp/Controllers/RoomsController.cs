@@ -46,7 +46,7 @@ namespace HotelWebApp.Controllers
         }
 
         // GET: Rooms/Create
-        public IActionResult Create()
+        public IActionResult Create(int? HotelId)
         {
             ViewData["HotelId"] = new SelectList(_context.Hotel, "Id", "Address");
             return View();
@@ -59,6 +59,7 @@ namespace HotelWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Number,MaxGuests,HotelId")] Room room)
         {
+            var idHotel = room.HotelId;
             if (ModelState.IsValid)
             {
                 _context.Add(room);

@@ -64,6 +64,7 @@ namespace HotelWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            
             return View(hotel);
         }
 
@@ -159,5 +160,7 @@ namespace HotelWebApp.Controllers
         {
             return (_context.Hotel?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+       
     }
 }
