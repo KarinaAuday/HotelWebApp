@@ -22,21 +22,23 @@ namespace HotelWebApp.Controllers
         // GET: Hotels
         public async Task<IActionResult> Index()
         {
+            
             return _context.Hotel != null ?
                         View(await _context.Hotel.ToListAsync()) :
                         Problem("Entity set 'HotelWebAppContext.Hotel'  is null.");
         }
 
         // GET: Hotels/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Hotel == null)
             {
                 return NotFound();
             }
+            //var hotel = await _context.Hotel.Include("Rooms").SingleOrDefault(h => h.Id == id); // Recupera el hotel y sus habitaciones
+            var hotel =  _context.Hotel.Include("Rooms").SingleOrDefault(m => m.Id == id);
 
-            var hotel = await _context.Hotel
-                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (hotel == null)
             {
                 return NotFound();
@@ -56,12 +58,17 @@ namespace HotelWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Stars,Address,PhoneNumber")] Hotel hotel)
+        public async Task<IActionResult> Create(bool crearHabitacion,[Bind("Id,Name,Stars,Address,PhoneNumber")] Hotel hotel)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(hotel);
                 await _context.SaveChangesAsync();
+                if (crearHabitacion)
+                {
+                    return RedirectToAction("Create", "Rooms", new { id = hotel.Id });
+
+                }
                 return RedirectToAction(nameof(Index));
             }
             

@@ -46,28 +46,50 @@ namespace HotelWebApp.Controllers
         }
 
         // GET: Rooms/Create
-        public IActionResult Create(int? HotelId)
+        public IActionResult Create()
         {
-            ViewData["HotelId"] = new SelectList(_context.Hotel, "Id", "Address");
+
+            // Recupera la lista de hoteles desde tu base de datos o fuente de datos
+            var hotelList = _context.Hotel.ToList(); // 
+           
+            // Pasa la lista de hoteles a la vista usando ViewBag
+            ViewBag.HotelList = new SelectList(hotelList, "Id", "Name");
+
+            ViewData["HotelId"] = new SelectList(_context.Hotel, "Id", "Name");
             return View();
+
         }
 
+
         // POST: Rooms/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Number,MaxGuests,HotelId")] Room room)
         {
-            var idHotel = room.HotelId;
+
+
+            var hotelElegido = _context.Hotel
+                .Find(room.HotelId);
+
+            if (hotelElegido != null)
+            {
+
+                // Asigna el hotel a la habitación.
+                room.Hotel = hotelElegido;
+
+            }
+            // hotelElegido.Rooms.Add(room);
+            VerificarHabitacion(room);
+
             if (ModelState.IsValid)
             {
                 _context.Add(room);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["HotelId"] = new SelectList(_context.Hotel, "Id", "Address", room.HotelId);
-            return View(room);
+            ViewData["HotelId"] = new SelectList(_context.Hotel, "Id", "Address", ViewBag.Hotel);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Rooms/Edit/5
@@ -98,6 +120,8 @@ namespace HotelWebApp.Controllers
             {
                 return NotFound();
             }
+
+          //  VerificarHabitacion(room);   Terminar de arreglar
 
             if (ModelState.IsValid)
             {
@@ -164,6 +188,35 @@ namespace HotelWebApp.Controllers
         private bool RoomExists(int id)
         {
             return (_context.Room?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+        public bool ExistRoomNumber(Room room)
+        {
+            bool resultado = false;
+            bool resultado2 = false;
+            if (room.Number!=0)
+            {
+                if ( room.Id != 0)
+                {
+                    resultado = _context.Room.Any(p => p.Number == room.Number && p.Id != room.Id) ;
+                   
+                }
+                else
+                {
+                    resultado = _context.Room.Any(p => p.Number == room.Number) ;
+                    
+                }
+            }
+            return resultado && resultado2;
+        }
+
+
+        private void VerificarHabitacion(Room room)
+        {
+           
+            if (ExistRoomNumber(room))
+            {
+                ModelState.AddModelError("Titulo", "Ya existe una Habitacion con ese numero.");
+            }
         }
     }
 }

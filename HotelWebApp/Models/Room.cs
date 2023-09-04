@@ -29,6 +29,6 @@ namespace HotelWebApp.Models
 
         public int HotelId { get; set; }
 
-        public Hotel Hotel { get; set; }
+        public Hotel? Hotel { get; set; }
     }
 }
