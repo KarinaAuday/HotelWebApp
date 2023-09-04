@@ -71,12 +71,14 @@ namespace HotelWebApp.Controllers
 
             var hotelElegido = _context.Hotel
                 .Find(room.HotelId);
+            
 
             if (hotelElegido != null)
             {
 
                 // Asigna el hotel a la habitación.
                 room.Hotel = hotelElegido;
+
 
             }
             // hotelElegido.Rooms.Add(room);
@@ -192,21 +194,16 @@ namespace HotelWebApp.Controllers
         public bool ExistRoomNumber(Room room)
         {
             bool resultado = false;
-            bool resultado2 = false;
+           
+            //bool resultado2 = false;
             if (room.Number!=0)
             {
-                if ( room.Id != 0)
-                {
-                    resultado = _context.Room.Any(p => p.Number == room.Number && p.Id != room.Id) ;
+                
+                    resultado = _context.Room.Any(p => p.Number == room.Number && p.Hotel.Name.Equals(room.Hotel.Name)) ;
                    
-                }
-                else
-                {
-                    resultado = _context.Room.Any(p => p.Number == room.Number) ;
-                    
-                }
+               
             }
-            return resultado && resultado2;
+            return resultado;
         }
 
 
